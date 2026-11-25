@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/app_icon.png" width="150" alt="Coderabbit VS Code Logo" />
+  <img src="../assets/app_icon.svg" width="150" alt="Coderabbit VS Code Logo" />
 </p>
 
 <h1 align="center">Coderabbit VS Code</h1>
