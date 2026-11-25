@@ -1,37 +1,135 @@
-# Agentic CLI — Code Review System for AI Agents
+<p align="center">
+  <img src="assets/app_icon.png" width="150" alt="Coderabbit Logo" />
+</p>
 
-CLI-first code review engine designed to integrate with coding agents (Hermes, Claude Code, Codex, OpenCode).
+<h1 align="center">Coderabbit</h1>
 
-## Philosophy
+<p align="center">
+  <strong>Code review for AI agents — CLI-first, offline-capable, extensible.</strong><br>
+  A sophisticated code review system that lets your AI coding agent understand context, find issues, and write better code.
+</p>
 
-- **Agent-native**: JSON output by default, easy to parse in any language
-- **Offline-capable**: Cache repos locally, work without network
-- **Configurable**: `.agentic.yaml` for per-repo settings
-- **Extensible**: Plugin system for custom analyzers
+<p align="center">
+  <strong>English</strong>
+</p>
 
-## Quick Start
+<p align="center">
+  <a href="https://github.com/Goutham011/coderabbit/stargazers"><img src="https://img.shields.io/github/stars/Goutham011/coderabbit?style=flat-square&color=gold" alt="GitHub stars" /></a>
+  <a href="https://github.com/Goutham011/coderabbit/releases/latest"><img src="https://img.shields.io/github/v/release/Goutham011/coderabbit?style=flat-square&color=blue" alt="Latest release" /></a>
+  <img src="https://img.shields.io/badge/platform-Python%203.9%2B-lightgrey?style=flat-square" alt="Python 3.9+" />
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License" />
+</p>
+
+---
+
+## Why Coderabbit?
+
+AI coding agents need to understand code deeply to write quality software. Coderabbit provides the context and analysis they need to review their own work and catch issues before they become bugs.
+
+- **Agent-native.** JSON output by default, easy to parse in any language (Python, JavaScript, Go, etc.)
+- **Offline-capable.** Cache repos locally, work without network access to external services
+- **Privacy-first.** Your code never leaves your machine unless you configure it to
+- **Configurable.** `.agentic.yaml` for per-repo settings, team-wide policies
+- **Extensible.** Plugin system for custom analyzers, linter integrations, and domain-specific rules
+- **Tool-focused.** Understands 15+ tools: semgrep, eslint, ruff, mypy, bandit, and more
+
+---
+
+## Features at a glance
+
+<table>
+<tr>
+<td width="33%" valign="top">
+
+### 🔍 Review
+- **Branch analysis** — Diff-based code review for any branch
+- **Multi-tool scanning** — Semgrep, ESLint, Ruff, MyPy, Bandit
+- **Security checks** — Detects secrets, vulnerabilities, unsafe patterns
+- **Style guide** — Enforces team coding standards
+
+</td>
+<td width="33%" valign="top">
+
+### 🧠 Planning
+- **Issue-to-plan** — Convert GitHub issues into implementation plans
+- **PR triage** — Automatic priority queue for open pull requests
+- **Risk assessment** — Estimate complexity, test coverage needs
+
+</td>
+<td width="33%" valign="top">
+
+### 🛡️ Verification
+- **Sandboxed testing** — Run tests in isolated environments
+- **Coverage analysis** — Identify untested code paths
+- **Performance profiling** — Detect potential bottlenecks
+
+</td>
+</tr>
+</table>
+
+---
+
+## Features in detail
+
+### 🔍 Code Review
+| Feature | Description |
+|---------|-------------|
+| **Branch diff** | Analyzes all changed files between any two commits |
+| **Security scan** | Detects secrets, vulnerabilities, injection risks |
+| **Dependency check** | Warns about outdated or vulnerable packages |
+| **Style enforcement** | Applies team-defined style guides automatically |
+
+### 🧠 Planning & Triage
+| Tool | Description |
+|------|-------------|
+| `agentic review` | Review code changes with JSON or human output |
+| `agentic plan` | Generate implementation plan from issue/PR |
+| `agentic triage` | Priority queue of open PRs with risk scores |
+| `agentic verify` | Sandbox test execution for changes |
+
+### 🛠️ Configurable Analysis
+| Config | Description |
+|----------|-------------|
+| **Languages** | Python, TypeScript, JavaScript, Go, Rust, Java |
+| **Tools** | semgrep, eslint, ruff, mypy, bandit, prettier |
+| **Profiles** | strict, assertive, conservative, custom |
+| **Rules** | Custom rule sets via YAML configuration |
+
+---
+
+## How to use
+
+### Install
 
 ```bash
-# Install
 pip install -e .
+```
 
-# Generate token for API access
-agentic token generate --scope read
+### Quick Start
 
-# Review a branch (JSON output for agents)
+Review a branch with JSON output (for agents):
+```bash
 agentic review https://github.com/org/repo main --output json
+```
 
-# Human-readable review
+Review a local project with human-readable output:
+```bash
 agentic review ./my-project feature-branch --output human
+```
 
-# Plan from an issue
+Generate an implementation plan from an issue:
+```bash
 agentic plan https://github.com/org/repo/issues/42 --output agent-prompt
 ```
 
-## Agent Integration Example
+---
+
+## Agent Integration
+
+Coderabbit speaks the language of AI agents. All commands output structured JSON that your agent can parse directly:
 
 ```python
-# Hermes or any agent calling agentic
+# Hermes or any agent calling coderabbit
 import subprocess
 import json
 
@@ -41,18 +139,10 @@ result = subprocess.run(
 )
 
 review = json.loads(result.stdout)
-print(review["findings"])  # Structured findings
+print(review["findings"])  # Structured findings ready for agent action
 ```
 
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `review <repo> <branch>` | Analyze code changes |
-| `plan <source>` | Generate implementation plan |
-| `verify <repo> <branch>` | Sandbox test execution |
-| `triage` | Priority queue of open PRs |
-| `token generate` | Create auth token |
+---
 
 ## Configuration
 
@@ -64,28 +154,113 @@ language: python
 reviews:
   profile: assertive
   auto_review: true
+
 tools:
   semgrep: enabled
   eslint: enabled
+  ruff: enabled
+  mypy: enabled
+
 knowledge_base:
   guidelines: docs/coding-standards.md
+
 unsafe_symbols:
   - eval(
 ```
 
+### Configuration Options
+
+| Option | Description |
+|--------|-------------|
+| `version` | Config schema version (currently 1) |
+| `language` | Primary language for analysis |
+| `reviews.profile` | strict / assertive / conservative |
+| `reviews.auto_review` | Enable automatic review on PRs |
+| `tools.*` | Enable/disable specific analysis tools |
+
+---
+
 ## Development
 
+### Install dev dependencies
 ```bash
-# Install dev dependencies
 pip install -e ".[dev]"
+```
 
-# Run tests
+### Run tests
+```bash
 pytest tests/
+```
 
-# Lint
+### Lint
+```bash
 ruff check src/
 ```
 
+### Add new tool
+1. Implement the tool interface in `src/agentic/tools/`
+2. Register it in the tool registry
+3. Add configuration option to `.agentic.yaml`
+
+---
+
 ## Architecture
 
-See [architecture-open.md](./architecture-open.md) for full system design.
+Coderabbit follows a modular architecture designed for AI agent integration:
+
+```
+┌─────────────────────────────────────────────────┐
+│                    CLI LAYER                    │
+│  ┌─────────┐  ┌─────────┐  ┌─────────────┐       │
+│  │ review  │  │  plan   │  │  verify   │       │
+│  └────┬────┘  └────┬────┘  └─────┬───────┘       │
+└───────┼────────────┼─────────────┼───────────────┘
+        │            │             │
+        ▼            ▼             ▼
+┌─────────────────────────────────────────────────┐
+│                   ENGINE LAYER                  │
+│  ┌─────────────┐  ┌─────────┐  ┌────────────┐   │
+│  │   Analyzer  │  │ Planner │  │ Validator │   │
+│  └─────────────┘  └─────────┘  └────────────┘   │
+└────────────────────────┬────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────┐
+│                    TOOL LAYER                   │
+│  ┌───────┐  ┌───────┐  ┌───────┐  ┌───────┐    │
+│  │Semgrep│  │ESLint │  │  Ruff │  │  MyPy │    │
+│  └───────┘  └───────┘  └───────┘  └───────┘    │
+└─────────────────────────────────────────────────┘
+```
+
+See [architecture-open.md](./architecture-open.md) for full system design details.
+
+---
+
+## License
+
+MIT License — See [LICENSE](LICENSE) file for details.
+
+---
+
+## Contributing
+
+1. Fork the repo
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+---
+
+## Acknowledgments
+
+- [Semgrep](https://semgrep.dev/) — Static analysis rules
+- [Ruff](https://ruff.rs/) — Fast Python linter
+- [MyPy](https://mypy-lang.org/) — Python type checker
+- [Bandit](https://bandit.readthedocs.io/) — Security linter for Python
+
+<p align="center">
+  <strong>Built for AI coding agents everywhere.</strong><br>
+  If you're building the next generation of AI software, a ⭐ helps others find it.
+</p>
