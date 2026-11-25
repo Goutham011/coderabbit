@@ -51,9 +51,10 @@ htmlcov/
 .tox/
 .nox/
 
-# Node modules (Android app)
+# Node modules (Android app and VSCode extension)
 android-app/node_modules/
 android-app/build/
+vscode-extension/node_modules/
 
 # OS files
 .DS_Store

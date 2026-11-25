@@ -22,7 +22,7 @@ class ReviewEngine:
 
     def __init__(self, config_path: Optional[Path] = None, llm_provider: Optional[str] = None):
         self.config = Config.load(config_path)
-        self._cache_dir = Path(tempfile.gettempdir()) / "agentic_cache"
+        self._cache_dir = Path(tempfile.gettempdir()) / "coderabbit_cache"
         self._cache_dir.mkdir(parents=True, exist_ok=True)
         self.llm_provider = llm_provider or self._detect_llm_provider()
         self._llm_client = self._init_llm_client()

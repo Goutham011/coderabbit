@@ -1,7 +1,7 @@
 """Tests for the triage engine."""
 import pytest
 import json
-from agentic.triage import PRItem, TriageQueue, ReviewerScore
+from coderabbit.triage import PRItem, TriageQueue, ReviewerScore
 
 
 class TestPRItem:

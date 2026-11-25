@@ -1,5 +1,5 @@
-"""Agentic CLI entry point."""
-from agentic.cli import cli
+"""Coderabbit CLI entry point."""
+from coderabbit.cli import cli
 
 
 def main():

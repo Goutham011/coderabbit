@@ -3,7 +3,7 @@ import pytest
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from agentic.knowledge_base import KnowledgeBase
+from coderabbit.knowledge_base import KnowledgeBase
 
 
 class TestKnowledgeBase:

@@ -28,7 +28,7 @@ interface Finding {
 }
 
 /**
- * Review result from agentic CLI.
+ * Review result from coderabbit CLI.
  */
 interface ReviewResult {
   repo: string;
@@ -124,17 +124,17 @@ function createDiagnostic(
 
   if (finding.suggestion) {
     diagnostic.code = escapeHtml(finding.suggestion);
-    diagnostic.source = 'agentic';
+    diagnostic.source = 'coderabbit';
   }
 
   return diagnostic;
 }
 
 /**
- * Run agentic review on current file.
+ * Run coderabbit review on current file.
  */
 async function runReviewOnFile(filePath: string): Promise<ReviewResult | null> {
-  const config = vscode.workspace.getConfiguration('agentic');
+  const config = vscode.workspace.getConfiguration('coderabbit');
   const enableOnSave = config.get<boolean>('enableOnSave', true);
 
   if (!enableOnSave) {
@@ -148,7 +148,7 @@ async function runReviewOnFile(filePath: string): Promise<ReviewResult | null> {
 
   try {
     const output = await execAsync(
-      `agentic review "${escapeHtml(workspaceFolders[0].uri.fsPath)}" HEAD --output json`
+      `coderabbit review "${escapeHtml(workspaceFolders[0].uri.fsPath)}" HEAD --output json`
     );
 
     const result: ReviewResult = JSON.parse(output.stdout);
@@ -171,7 +171,7 @@ async function applyFix(
     return false;
   }
 
-  const config = vscode.workspace.getConfiguration('agentic');
+  const config = vscode.workspace.getConfiguration('coderabbit');
   const autoApply = config.get<boolean>('autoApplyFixes', false);
 
   if (!autoApply) {
@@ -214,7 +214,7 @@ async function applyFix(
  */
 function showReviewPanel(result: ReviewResult): void {
   const panel = vscode.window.createWebviewPanel(
-    'agenticReview',
+    'coderabbitReview',
     `Code Review: ${escapeHtml(result.repo)}@${escapeHtml(result.branch)}`,
     vscode.ViewColumn.Beside,
     {
@@ -306,12 +306,12 @@ export function activate(context: vscode.ExtensionContext): void {
   console.log('Agentic Code Review extension activated');
 
   // Diagnostic collection for all documents
-  const diagnosticCollection = vscode.languages.createDiagnosticCollection('agentic');
+  const diagnosticCollection = vscode.languages.createDiagnosticCollection('coderabbit');
   context.subscriptions.push(diagnosticCollection);
 
   // Command: Review current file
   const reviewFile = vscode.commands.registerCommand(
-    'agentic.reviewFile',
+    'coderabbit.reviewFile',
     async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
@@ -358,15 +358,15 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Command: Open review panel
   const openPanel = vscode.commands.registerCommand(
-    'agentic.openPanel',
+    'coderabbit.openPanel',
     () => {
-      vscode.commands.executeCommand('workbench.view.explorer', 'agenticReviewPanel');
+      vscode.commands.executeCommand('workbench.view.explorer', 'coderabbitReviewPanel');
     }
   );
 
   // Command: Review workspace
   const reviewWorkspace = vscode.commands.registerCommand(
-    'agentic.reviewWorkspace',
+    'coderabbit.reviewWorkspace',
     async () => {
       const result = await runReviewOnFile('workspace');
       if (result) {
@@ -377,7 +377,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Command: Review last save
   const reviewSaved = vscode.commands.registerCommand(
-    'agentic.reviewSaved',
+    'coderabbit.reviewSaved',
     async () => {
       const editor = vscode.window.activeTextEditor;
       if (!editor) {
@@ -394,7 +394,7 @@ export function activate(context: vscode.ExtensionContext): void {
   // Handle file saves
   const saveObserver = vscode.workspace.onDidSaveTextDocument(
     async (document) => {
-      const config = vscode.workspace.getConfiguration('agentic');
+      const config = vscode.workspace.getConfiguration('coderabbit');
       const enableOnSave = config.get<boolean>('enableOnSave', true);
 
       if (!enableOnSave) {

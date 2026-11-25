@@ -1,0 +1,24 @@
+# Example custom rule for Semgrep
+
+rules:
+  - id: no-eval-in-production
+    patterns:
+      - pattern: eval($EXPR)
+      - pattern-not: eval("const")  # Allow safe constants
+    message: "Avoid eval() in production code — use ast.literal_eval or json.loads"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code"
+      reference: "https://cwe.mitre.org/data/definitions/95.html"
+
+  - id: no-hardcoded-secrets
+    patterns:
+      - pattern: $PASSWORD = "$STR"
+      - pattern-not: $PASSWORD = ""  # Allow empty defaults
+    message: "Hardcoded password detected — use environment variables or secrets manager"
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      reference: "https://cwe.mitre.org/data/definitions/798.html"

@@ -8,7 +8,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from agentic.sandbox import SandboxManager, SandboxResult
+from coderabbit.sandbox import SandboxManager, SandboxResult
 
 
 class TestSandboxResult:

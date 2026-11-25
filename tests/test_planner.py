@@ -3,7 +3,7 @@ import pytest
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from agentic.planner import Plan, Planner
+from coderabbit.planner import Plan, Planner
 
 
 class TestPlan:
@@ -45,7 +45,7 @@ class TestPlanner:
     def test_plan_with_kb_research(self, tmp_path: Path):
         py_file = tmp_path / "auth.py"
         py_file.write_text("def authenticate(user):\n    pass\n", encoding="utf-8")
-        from agentic.knowledge_base import KnowledgeBase
+        from coderabbit.knowledge_base import KnowledgeBase
         kb = KnowledgeBase(db_path=tmp_path / "kb.db")
         kb.index_repo(tmp_path, "python")
         planner = Planner(kb=kb)

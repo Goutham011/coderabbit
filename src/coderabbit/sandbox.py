@@ -56,7 +56,7 @@ class SandboxManager:
 
     def __init__(self, work_dir: Optional[Path] = None):
         if work_dir is None:
-            work_dir = Path(tempfile.mkdtemp(prefix="agentic_sandbox_"))
+            work_dir = Path(tempfile.mkdtemp(prefix="coderabbit_sandbox_"))
         else:
             work_dir.mkdir(parents=True, exist_ok=True)
         self._work_dir = work_dir
@@ -170,7 +170,7 @@ class SandboxManager:
         cov_xml = repo_path / "coverage.xml"
         if cov_xml.exists():
             artifacts["coverage"] = self._read_coverage(cov_xml)
-        summary_py = repo_path / ".agentic_summary.json"
+        summary_py = repo_path / ".coderabbit_summary.json"
         if summary_py.exists():
             try:
                 artifacts["summary"] = json.loads(summary_py.read_text())

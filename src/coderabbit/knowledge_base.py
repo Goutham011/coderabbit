@@ -60,7 +60,7 @@ class KnowledgeBase:
 
     def __init__(self, db_path: Optional[Path] = None):
         if db_path is None:
-            db_path = Path.home() / ".agentic" / "knowledge.db"
+            db_path = Path.home() / ".coderabbit" / "knowledge.db"
         self._db_path = db_path
         self._db_path.parent.mkdir(parents=True, exist_ok=True)
         self._conn = sqlite3.connect(str(db_path))

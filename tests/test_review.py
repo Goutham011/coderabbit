@@ -3,8 +3,8 @@ import pytest
 from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 
-from agentic.models import Finding, Severity, ReviewResult
-from agentic.config import Config
+from coderabbit.models import Finding, Severity, ReviewResult
+from coderabbit.config import Config
 
 
 class TestFinding:
@@ -35,9 +35,9 @@ class TestConfig:
 
 
 class TestReviewEngine:
-    @patch("agentic.review.git.Repo")
+    @patch("coderabbit.review.git.Repo")
     def test_review_local_repo(self, mock_git_cls):
-        from agentic.review import ReviewEngine
+        from coderabbit.review import ReviewEngine
         mock_repo = Mock()
         mock_repo.git.diff.return_value = "diff --git a/test.py b/test.py\n+print('hello')\n"
         mock_git_cls.return_value = mock_repo
@@ -48,7 +48,7 @@ class TestReviewEngine:
             assert result.branch == "main"
 
     def test_severity_mapping(self):
-        from agentic.review import ReviewEngine
+        from coderabbit.review import ReviewEngine
         engine = ReviewEngine()
         assert engine._map_severity("ERROR") == Severity.HIGH
         assert engine._map_severity("WARNING") == Severity.MEDIUM

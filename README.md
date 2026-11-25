@@ -29,7 +29,7 @@ AI coding agents need to understand code deeply to write quality software. Coder
 - **Agent-native.** JSON output by default, easy to parse in any language (Python, JavaScript, Go, etc.)
 - **Offline-capable.** Cache repos locally, work without network access to external services
 - **Privacy-first.** Your code never leaves your machine unless you configure it to
-- **Configurable.** `.agentic.yaml` for per-repo settings, team-wide policies
+- **Configurable.** `.coderabbit.yaml` for per-repo settings, team-wide policies
 - **Extensible.** Plugin system for custom analyzers, linter integrations, and domain-specific rules
 - **Tool-focused.** Understands 15+ tools: semgrep, eslint, ruff, mypy, bandit, and more
 
@@ -82,10 +82,10 @@ AI coding agents need to understand code deeply to write quality software. Coder
 ### 🧠 Planning & Triage
 | Tool | Description |
 |------|-------------|
-| `agentic review` | Review code changes with JSON or human output |
-| `agentic plan` | Generate implementation plan from issue/PR |
-| `agentic triage` | Priority queue of open PRs with risk scores |
-| `agentic verify` | Sandbox test execution for changes |
+| `coderabbit review` | Review code changes with JSON or human output |
+| `coderabbit plan` | Generate implementation plan from issue/PR |
+| `coderabbit triage` | Priority queue of open PRs with risk scores |
+| `coderabbit verify` | Sandbox test execution for changes |
 
 ### 🛠️ Configurable Analysis
 | Config | Description |
@@ -109,17 +109,17 @@ pip install -e .
 
 Review a branch with JSON output (for agents):
 ```bash
-agentic review https://github.com/org/repo main --output json
+coderabbit review https://github.com/org/repo main --output json
 ```
 
 Review a local project with human-readable output:
 ```bash
-agentic review ./my-project feature-branch --output human
+coderabbit review ./my-project feature-branch --output human
 ```
 
 Generate an implementation plan from an issue:
 ```bash
-agentic plan https://github.com/org/repo/issues/42 --output agent-prompt
+coderabbit plan https://github.com/org/repo/issues/42 --output agent-prompt
 ```
 
 ---
@@ -134,7 +134,7 @@ import subprocess
 import json
 
 result = subprocess.run(
-    ["agentic", "review", "https://github.com/user/repo", "feature-branch", "--output", "json"],
+    ["coderabbit", "review", "https://github.com/user/repo", "feature-branch", "--output", "json"],
     capture_output=True, text=True
 )
 
@@ -146,7 +146,7 @@ print(review["findings"])  # Structured findings ready for agent action
 
 ## Configuration
 
-Create `.agentic.yaml` in your repo root:
+Create `.coderabbit.yaml` in your repo root:
 
 ```yaml
 version: 1
@@ -198,9 +198,9 @@ ruff check src/
 ```
 
 ### Add new tool
-1. Implement the tool interface in `src/agentic/tools/`
+1. Implement the tool interface in `src/coderabbit/tools/`
 2. Register it in the tool registry
-3. Add configuration option to `.agentic.yaml`
+3. Add configuration option to `.coderabbit.yaml`
 
 ---
 

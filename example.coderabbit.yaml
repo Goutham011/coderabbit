@@ -1,4 +1,4 @@
-# Example configuration for Agentic CLI
+# Example configuration for Coderabbit CLI
 
 version: 1
 language: python
@@ -18,7 +18,7 @@ tools:
   pylint: false
   bandit: false
   custom_rules:
-    - .agentic/rules/security.yaml
+    - .coderabbit/rules/security.yaml
 
 knowledge_base:
   guidelines: docs/coding-standards.md

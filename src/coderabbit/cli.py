@@ -6,18 +6,18 @@ from typing import Optional
 import click
 import json
 
-from agentic.triage import TriageQueue
-from agentic.sandbox import SandboxResult
+from coderabbit.triage import TriageQueue
+from coderabbit.sandbox import SandboxResult
 
 
 @click.group()
-@click.version_option(version="0.6.0", prog_name="agentic")
+@click.version_option(version="0.6.0", prog_name="coderabbit")
 @click.option("--verbose", "-v", is_flag=True)
 @click.option("--config", "-c", type=Path, default=None)
 @click.option("--llm-provider", type=click.Choice(["ollama", "claude", "codex", "openai", "llama.cpp", "auto"]), default="auto", help="LLM provider for fix generation")
 @click.pass_context
 def cli(ctx, verbose, config, llm_provider):
-    """Agentic — AI-powered code review CLI for agents."""
+    """Coderabbit — AI-powered code review CLI for agents."""
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
     ctx.obj["config_path"] = config
@@ -37,7 +37,7 @@ def review(ctx, repo, branch, output, profile, baseline, full_scan, apply_fixes)
     """Analyze code changes and return structured findings."""
     if ctx.obj["verbose"]:
         click.echo(f"Reviewing {repo}@{branch}... ", err=True, nl=False)
-    from agentic.review import ReviewEngine
+    from coderabbit.review import ReviewEngine
 
     # Determine LLM provider
     provider = ctx.obj.get("llm_provider")
@@ -69,8 +69,8 @@ def review(ctx, repo, branch, output, profile, baseline, full_scan, apply_fixes)
 @click.option("--llm-provider", type=click.Choice(["ollama", "claude", "codex", "openai", "auto"]), default=None)
 def plan(source, output, repo_path, llm_provider):
     """Generate implementation plan from issue or spec."""
-    from agentic.planner import Planner
-    from agentic.knowledge_base import KnowledgeBase
+    from coderabbit.planner import Planner
+    from coderabbit.knowledge_base import KnowledgeBase
 
     kb = KnowledgeBase() if repo_path else None
     if kb and repo_path and repo_path.exists():
@@ -95,7 +95,7 @@ def plan(source, output, repo_path, llm_provider):
 @click.option("--timeout", type=int, default=None, help="Test timeout in seconds (default: 180)")
 def verify(repo, branch, test_type, output, timeout):
     """Run sandboxed tests for PR behavior validation."""
-    from agentic.sandbox import SandboxManager
+    from coderabbit.sandbox import SandboxManager
     mgr = SandboxManager()
     try:
         result = mgr.run_tests(repo, branch, test_type, timeout=timeout)
@@ -132,7 +132,7 @@ def _print_verify_result(result: SandboxResult) -> None:
 @click.option("--format", "-f", type=click.Choice(["table", "json", "md"]), default="table")
 def triage(org, format):
     """Show prioritized PR queue."""
-    from agentic.triage import TriageQueue, PRItem
+    from coderabbit.triage import TriageQueue, PRItem
     sample_prs = [
         PRItem(repo="acme/core", pr_number=42, title="Fix auth bypass vulnerability", author="alice", severity=0.9, external_urgency=3, downstream_blocked=2, change_value=5, review_effort=2, labels=["security", "urgent"]),
         PRItem(repo="acme/api", pr_number=87, title="Add rate limiting to endpoints", author="bob", severity=0.4, external_urgency=1, downstream_blocked=0, change_value=3, review_effort=3, labels=["feature"]),
@@ -182,7 +182,7 @@ def kb():
 @click.option("--language", "-l", default="python", help="Primary language")
 def kb_index(repo_path: Path, language: str):
     """Index repository into knowledge graph."""
-    from agentic.knowledge_base import KnowledgeBase
+    from coderabbit.knowledge_base import KnowledgeBase
     if not repo_path.exists():
         click.echo(json.dumps({"error": f"Path not found: {repo_path}"}), err=True)
         sys.exit(1)
@@ -198,7 +198,7 @@ def kb_index(repo_path: Path, language: str):
 @click.option("--language", "-l", default=None, help="Filter by language (python, javascript, etc.)")
 def kb_query(type: str, value: str, language: Optional[str]):
     """Search knowledge graph."""
-    from agentic.knowledge_base import KnowledgeBase
+    from coderabbit.knowledge_base import KnowledgeBase
     kb = KnowledgeBase()
     if language:
         results = kb.query_by_language(language, type, value)

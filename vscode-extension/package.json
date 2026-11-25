@@ -1,9 +1,9 @@
 {
-  "name": "agentic-vscode",
+  "name": "coderabbit-vscode",
   "displayName": "Agentic Code Review",
   "description": "AI-powered code review for VS Code. Real-time inline annotations and PR review integration.",
   "version": "0.1.0",
-  "publisher": "agentic",
+  "publisher": "coderabbit",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -12,8 +12,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:agentic.reviewFile",
-    "onCommand:agentic.reviewWorkspace",
+    "onCommand:coderabbit.reviewFile",
+    "onCommand:coderabbit.reviewWorkspace",
     "onLanguage:python",
     "onLanguage:javascript",
     "onLanguage:typescript",
@@ -25,36 +25,36 @@
   "contributes": {
     "commands": [
       {
-        "command": "agentic.reviewFile",
+        "command": "coderabbit.reviewFile",
         "title": "Agentic: Review Current File",
         "category": "Agentic"
       },
       {
-        "command": "agentic.reviewWorkspace",
+        "command": "coderabbit.reviewWorkspace",
         "title": "Agentic: Review Workspace",
         "category": "Agentic"
       },
       {
-        "command": "agentic.reviewSaved",
+        "command": "coderabbit.reviewSaved",
         "title": "Agentic: Review Last Save",
         "category": "Agentic"
       },
       {
-        "command": "agentic.openPanel",
+        "command": "coderabbit.openPanel",
         "title": "Agentic: Open Review Panel",
         "category": "Agentic"
       }
     ],
     "keybindings": [
       {
-        "command": "agentic.reviewFile",
+        "command": "coderabbit.reviewFile",
         "key": "ctrl+shift+r",
         "mac": "cmd+shift+r",
         "win": "ctrl+shift+r",
         "when": "editorTextFocus"
       },
       {
-        "command": "agentic.openPanel",
+        "command": "coderabbit.openPanel",
         "key": "ctrl+shift+a",
         "mac": "cmd+shift+a",
         "win": "ctrl+shift+a",
@@ -63,8 +63,8 @@
     ],
     "problemMatchers": [
       {
-        "name": "agentic",
-        "owner": "agentic",
+        "name": "coderabbit",
+        "owner": "coderabbit",
         "fileLocation": "absolute",
         "pattern": {
           "regexp": "^(.+?):(\\\\d+):(\\\\d+):\\\\s+(\\\\w+):\\\\s+(.*)$",
@@ -79,7 +79,7 @@
     "views": {
       "explorer": [
         {
-          "id": "agenticReviewPanel",
+          "id": "coderabbitReviewPanel",
           "name": "Agentic Review"
         }
       ]
@@ -87,23 +87,23 @@
     "configuration": {
       "title": "Agentic Settings",
       "properties": {
-        "agentic.enableOnSave": {
+        "coderabbit.enableOnSave": {
           "type": "boolean",
           "default": true,
           "description": "Run code review on file save"
         },
-        "agentic.autoApplyFixes": {
+        "coderabbit.autoApplyFixes": {
           "type": "boolean",
           "default": false,
           "description": "Automatically apply one-click fixes"
         },
-        "agentic.severityThreshold": {
+        "coderabbit.severityThreshold": {
           "type": "string",
           "default": "medium",
           "enum": ["low", "medium", "high", "critical"],
           "description": "Minimum severity to display"
         },
-        "agentic.skipGeneratedFiles": {
+        "coderabbit.skipGeneratedFiles": {
           "type": "boolean",
           "default": true,
           "description": "Skip generated and vendor files"

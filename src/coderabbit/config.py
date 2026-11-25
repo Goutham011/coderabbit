@@ -1,4 +1,4 @@
-"""Configuration management for agentic."""
+"""Configuration management for coderabbit."""
 from __future__ import annotations
 from pathlib import Path
 from typing import Optional
@@ -36,7 +36,7 @@ class Config(BaseModel):
     @classmethod
     def load(cls, path: Optional[Path] = None) -> Config:
         if path is None:
-            for candidate in [Path.cwd() / ".agentic.yaml", Path.cwd() / ".agentic.yml", Path.home() / ".config" / "agentic" / "config.yaml"]:
+            for candidate in [Path.cwd() / ".coderabbit.yaml", Path.cwd() / ".coderabbit.yml", Path.home() / ".config" / "coderabbit" / "config.yaml"]:
                 if candidate.exists():
                     path = candidate
                     break
