@@ -1,0 +1,32 @@
+# Example configuration for Agentic CLI
+
+version: 1
+language: python
+
+reviews:
+  profile: assertive  # chill / assertive / quiet
+  auto_review: false  # Set true for automatic reviews on PR open
+  path_filters:
+    - "**/vendor/**"
+    - "**/__tests__/**"
+    - "**/node_modules/**"
+  tone_instructions: "Focus on security and correctness. Be direct."
+
+tools:
+  semgrep: true
+  eslint: false
+  pylint: false
+  bandit: false
+  custom_rules:
+    - .agentic/rules/security.yaml
+
+knowledge_base:
+  guidelines: docs/coding-standards.md
+  unsafe_symbols:
+    - eval(
+    - exec(
+    - __import__
+
+output:
+  inline_comments: true
+  summary: frontmatter

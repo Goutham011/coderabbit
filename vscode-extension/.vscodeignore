@@ -1,0 +1,14 @@
+*.map
+*.ts
+*.tsx
+src/**
+!.vscode
+.vscode/settings.json
+.gitignore
+*.vsix
+.vsix
+node_modules
+.git
+*.md
+!.vscode/settings.json
+src/**/*.ts
