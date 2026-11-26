@@ -15,5 +15,5 @@ knowledge_base:
   guidelines: docs/coding-standards.md
 
 unsafe_symbols:
-  - eval(
-  - exec(
+  - eval()
+  - exec()

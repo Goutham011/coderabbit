@@ -1,1 +1,0 @@
-node --save-dev @types/node @types/vscode typescript
