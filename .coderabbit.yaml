@@ -1,0 +1,19 @@
+version: 1
+language: en-US
+
+reviews:
+  profile: assertive
+  auto_review: false
+
+tools:
+  semgrep: true
+  eslint: false
+  pylint: false
+  bandit: false
+
+knowledge_base:
+  guidelines: docs/coding-standards.md
+
+unsafe_symbols:
+  - eval(
+  - exec(

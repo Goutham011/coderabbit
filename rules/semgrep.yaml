@@ -1,0 +1,84 @@
+rules:
+  # === SECURITY ISSUES ===
+  - id: android_hardcoded_keystore_password
+    name: Hardcoded keystore password
+    message: "Keystore password should not be hardcoded."
+    severity: HIGH
+    languages: [gradle, kotlin]
+    patterns:
+      - pattern: storePassword = "..."
+      - pattern: keyPassword = "..."
+
+  - id: android_sqlcipher_passphrase
+    name: Hardcoded SQLCipher passphrase
+    message: "Database passphrase should not be stored in source code."
+    severity: HIGH
+    languages: [kotlin]
+    patterns:
+      - pattern: PASSPHRASE.*=.*""
+
+  # === ARCHITECTURE ISSUES ===
+  - id: android_volatile_singleton
+    name: Non-volatile singleton pattern
+    message: "Object singletons should use @Volatile."
+    severity: MEDIUM
+    languages: [kotlin]
+
+  - id: android_broadcastreceiver_npe
+    name: Potential BroadcastReceiver NPE
+    message: "BroadcastReceivers must be unregistered properly."
+    severity: MEDIUM
+    languages: [kotlin, java]
+
+  # === BUILD CONFIGURATION ===
+  - id: android_proguard_minify_release
+    name: Minify enabled without ProGuard verification
+    message: "Verify proguard-rules.pro covers all dependencies."
+    severity: WARNING
+    languages: [gradle]
+
+  # === UNUSED/REDUNDANT CODE ===
+  - id: unused_import
+    name: Unused import statement
+    message: "Remove unused import to clean up code."
+    severity: INFO
+    languages: [kotlin, java, python, javascript, ts]
+
+  - id: redundant_try_catch
+    name: Redundant try-catch block
+    message: "This operation cannot throw an exception."
+    severity: LOW
+    languages: [kotlin, java]
+
+  # === CODE QUALITY ===
+  - id: overly_complex_function
+    name: Function has high complexity
+    message: "Break complex functions into smaller ones."
+    severity: MEDIUM
+    languages: [kotlin, java, python, javascript, ts]
+
+  - id: magic_number
+    name: Magic number usage
+    message: "Define magic numbers as named constants."
+    severity: LOW
+    languages: [kotlin, java, python, javascript, ts]
+
+  # === FUTURE-PROOFING ===
+  - id: deprecated_api_usage
+    name: Deprecated API usage
+    message: "This API is deprecated and may be removed."
+    severity: WARNING
+    languages: [kotlin, java, python, javascript, ts]
+
+  # === AI SLOP DETECTION ===
+  - id: verbose_variable_naming
+    name: Overly verbose variable name
+    message: "Consider shorter, more concise variable name."
+    severity: INFO
+    languages: [kotlin, java, python, javascript, ts]
+
+  - id: redundant_null_checks
+    name: Redundant null check
+    message: "Null check is redundant if the value cannot be null."
+    severity: INFO
+    languages: [kotlin, java]

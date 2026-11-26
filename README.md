@@ -10,10 +10,6 @@
 </p>
 
 <p align="center">
-  <strong>English</strong>
-</p>
-
-<p align="center">
   <a href="https://github.com/Goutham011/coderabbit/stargazers"><img src="https://img.shields.io/github/stars/Goutham011/coderabbit?style=flat-square&color=gold" alt="GitHub stars" /></a>
   <a href="https://github.com/Goutham011/coderabbit/releases/latest"><img src="https://img.shields.io/github/v/release/Goutham011/coderabbit?style=flat-square&color=blue" alt="Latest release" /></a>
   <img src="https://img.shields.io/badge/platform-Python%203.9%2B-lightgrey?style=flat-square" alt="Python 3.9+" />
@@ -22,125 +18,215 @@
 
 ---
 
-## Why Coderabbit?
+## One-Time CLI Integration (Terminal & Desktop Apps)
 
-AI coding agents need to understand code deeply to write quality software. Coderabbit provides the context and analysis they need to review their own work and catch issues before they become bugs.
+**Run this ONCE to connect coderabbit to ALL your coding CLIs:**
 
-- **Agent-native.** JSON output by default, easy to parse in any language (Python, JavaScript, Go, etc.)
-- **Offline-capable.** Cache repos locally, work without network access to external services
-- **Privacy-first.** Your code never leaves your machine unless you configure it to
-- **Configurable.** `.coderabbit.yaml` for per-repo settings, team-wide policies
-- **Extensible.** Plugin system for custom analyzers, linter integrations, and domain-specific rules
-- **Tool-focused.** Understands 15+ tools: semgrep, eslint, ruff, mypy, bandit, and more
+```bash
+cd /Users/gouthamsai/opencode_1/coderabbit
+bash setup.sh
+```
+
+This adds coderabbit to your shell PATH so it works in:
+- **Terminal**: Claude Code, Codex CLI, Cursor terminal, VS Code terminal
+- **Desktop Apps**: Claude Desktop, Cursor IDE, GitHub Copilot (via terminal), any desktop app with terminal access
 
 ---
 
-## Features at a glance
+## How It Works
 
-<table>
-<tr>
-<td width="33%" valign="top">
+When you run `coderabbit review` inside any project directory:
 
-### 🔍 Review
-- **Branch analysis** — Diff-based code review for any branch
-- **Multi-tool scanning** — Semgrep, ESLint, Ruff, MyPy, Bandit
-- **Security checks** — Detects secrets, vulnerabilities, unsafe patterns
-- **Style guide** — Enforces team coding standards
+```bash
+cd /path/to/your/project
+coderabbit review
+```
 
-</td>
-<td width="33%" valign="top">
-
-### 🧠 Planning
-- **Issue-to-plan** — Convert GitHub issues into implementation plans
-- **PR triage** — Automatic priority queue for open pull requests
-- **Risk assessment** — Estimate complexity, test coverage needs
-
-</td>
-<td width="33%" valign="top">
-
-### 🛡️ Verification
-- **Sandboxed testing** — Run tests in isolated environments
-- **Coverage analysis** — Identify untested code paths
-- **Performance profiling** — Detect potential bottlenecks
-
-</td>
-</tr>
-</table>
+1. **Auto-detects project type** (Android, React, Vue, Python, Go, Rust, etc.)
+2. **Genrates configuration** under `.coderabbit/`
+3. **Runs native Python deep scan** → finds 100+ issue types
+4. **Outputs comprehensive report** with fix suggestions to `.coderabbit/reports/`
 
 ---
 
-## Features in detail
+## Detailed Output: Issues & Fix Suggestions
 
-### 🔍 Code Review
-| Feature | Description |
-|---------|-------------|
-| **Branch diff** | Analyzes all changed files between any two commits |
-| **Security scan** | Detects secrets, vulnerabilities, injection risks |
-| **Dependency check** | Warns about outdated or vulnerable packages |
-| **Style enforcement** | Applies team-defined style guides automatically |
+### What Gets Detected
 
-### 🧠 Planning & Triage
-| Tool | Description |
-|------|-------------|
-| `coderabbit review` | Review code changes with JSON or human output |
-| `coderabbit plan` | Generate implementation plan from issue/PR |
-| `coderabbit triage` | Priority queue of open PRs with risk scores |
-| `coderabbit verify` | Sandbox test execution for changes |
-
-### 🛠️ Configurable Analysis
-| Config | Description |
-|----------|-------------|
-| **Languages** | Python, TypeScript, JavaScript, Go, Rust, Java |
-| **Tools** | semgrep, eslint, ruff, mypy, bandit, prettier |
-| **Profiles** | strict, assertive, conservative, custom |
-| **Rules** | Custom rule sets via YAML configuration |
+| Category | Severity | Examples |
+|----------|----------|----------|
+| **Hardcoded Secrets** | CRITICAL | Keystore passwords, API keys, DB passphrases |
+| **Security Vulnerabilities** | HIGH | SQL injection, XSS, code injection (eval/exec) |
+| **Release Build Issues** | HIGH | Unsigned APKs, missing ProGuard rules |
+| **Architecture Problems** | MEDIUM | Thread-unsafe singletons, memory leaks |
+| **AI Slop Patterns** | LOW | Verbose comments, redundant code, over-named variables |
+| **Unused Assets** | INFO | Drawables not referenced, dead code |
 
 ---
 
-## How to use
+## AI Slop Detection & Removal
 
-### Install
+Coderabbit identifies and suggests fixes for:
 
-```bash
-pip install -e .
+### 1. Redundant Code
+**Before:**
+```kotlin
+private fun isValidUser(): Boolean {
+    if (user != null && user.id != null && user.id > 0) {
+        return true
+    }
+    return false
+}
 ```
 
-### Quick Start
-
-Review a branch with JSON output (for agents):
-```bash
-coderabbit review https://github.com/org/repo main --output json
+**Fix:**
+```kotlin
+private fun isValidUser() = user?.id?.takeIf { it > 0 } != null
 ```
 
-Review a local project with human-readable output:
-```bash
-coderabbit review ./my-project feature-branch --output human
-```
-
-Generate an implementation plan from an issue:
-```bash
-coderabbit plan https://github.com/org/repo/issues/42 --output agent-prompt
-```
-
----
-
-## Agent Integration
-
-Coderabbit speaks the language of AI agents. All commands output structured JSON that your agent can parse directly:
-
+### 2. Over-Commenting
+**Before:**
 ```python
-# Hermes or any agent calling coderabbit
-import subprocess
-import json
-
-result = subprocess.run(
-    ["coderabbit", "review", "https://github.com/user/repo", "feature-branch", "--output", "json"],
-    capture_output=True, text=True
-)
-
-review = json.loads(result.stdout)
-print(review["findings"])  # Structured findings ready for agent action
+# This function calculates the sum of two numbers
+# It takes two parameters: a and b
+# Returns the result as an integer
+def add_numbers(a, b):
+    return a + b
 ```
+
+**Fix:**
+```python
+def add(a: int, b: int) -> int:
+    """Add two numbers."""
+    return a + b
+```
+
+### 3. Verbose Variable Names
+**Before:**
+```kotlin
+val userDatabaseDataSource = UserDataSource(database = database)
+```
+
+**Fix:**
+```kotlin
+val userDb = UserDataSource(database)
+```
+
+### 4. Excessive Nesting
+**Before:**
+```javascript
+if (user) {
+    if (user.profile) {
+        if (user.profile.active) {
+            // ... logic here
+        }
+    }
+}
+```
+
+**Fix:**
+```javascript
+if (!user?.profile?.active) return;
+// ... logic here
+```
+
+---
+
+## Integration with Coding CLIs
+
+### Hermes (Agentic OS)
+```bash
+# In your Hermes session, from any project directory:
+coderabbit review
+# View results in Agentic_OS/.coderabbit/reports/summary.md
+```
+
+### Claude Code CLI
+```bash
+# After setup.sh, in any project:
+coderabbit review
+# Use the JSON output to guide Claude's next actions
+cat .coderabbit/reports/issues.json | jq '.[] | select(.severity == "HIGH")'
+```
+
+### Codex CLI
+```bash
+# After setup.sh:
+coderabbit review
+# Codex can read the issues.json and apply the fixes
+cat .coderabbit/reports/issues.json > /tmp/codex_context.json
+```
+
+### Cursor / Desktop Apps
+```bash
+# These use your shell/terminal, so once PATH is set:
+cd /your/project
+coderabbit review
+```
+
+---
+
+## Example: Full Analysis of Agentic OS
+
+```bash
+$ cd /Users/gouthamsai/opencode_1/Agentic_OS && coderabbit review
+[INFO] Project root: /Users/gouthamsai/opencode_1/Agentic_OS
+Detected project type: android
+Confidence: 8
+
+🔧 Generating configuration...
+🔍 Running deep scan...
+
+✅ Scan complete!
+   Found 16 issues
+   Quality score: 79/100
+
+Report: .coderabbit/reports/summary.md
+JSON: .coderabbit/reports/issues.json
+```
+
+---
+
+## Fix Commands
+
+```bash
+# View detailed fixes
+coderabbit fix
+
+# Re-scan after applying fixes
+coderabbit review
+
+# Export issues for CI/CD
+coderabbit scan /path/to/project --output issues.json
+```
+
+---
+
+## Quick Start (Updated)
+
+### 1. One-Time Setup
+```bash
+cd /Users/gouthamsai/opencode_1/coderabbit
+bash setup.sh
+source ~/.zshrc  # or open new terminal
+```
+
+### 2. Use in Any Project
+```bash
+cd /path/to/your/project
+coderabbit review
+cat .coderabbit/reports/summary.md
+```
+
+---
+
+## What It Finds
+
+- **CRITICAL** — Hardcoded secrets (keystore passwords, API keys, DB passphrases)
+- **HIGH** — Injection risks (SQL, XSS, eval/exec), unsigned release builds
+- **MEDIUM** — Architecture issues (threading, memory leaks), verbose code
+- **LOW** — AI slop (over-comments, redundant code, long variables)
+- **INFO** — Unused assets, dead code paths
 
 ---
 
@@ -150,117 +236,91 @@ Create `.coderabbit.yaml` in your repo root:
 
 ```yaml
 version: 1
-language: python
+language: kotlin
+project_type: android
+
 reviews:
   profile: assertive
-  auto_review: true
+  ai_slop_detection: true
+  code_reduction: true
+  unused_analysis: true
 
-tools:
-  semgrep: enabled
-  eslint: enabled
-  ruff: enabled
-  mypy: enabled
-
-knowledge_base:
-  guidelines: docs/coding-standards.md
-
-unsafe_symbols:
-  - eval(
+analysis_config:
+  ai_suggestions: true
+  optimization_level: deep
+  quality_threshold: 85
+  max_line_reduction: 15%
 ```
 
-### Configuration Options
+---
 
-| Option | Description |
-|--------|-------------|
-| `version` | Config schema version (currently 1) |
-| `language` | Primary language for analysis |
-| `reviews.profile` | strict / assertive / conservative |
-| `reviews.auto_review` | Enable automatic review on PRs |
-| `tools.*` | Enable/disable specific analysis tools |
+## Android Build Configuration
+
+### What This Catches
+
+1. **Build Configuration Issues**
+   - Missing signing configurations for release builds
+   - Incorrect ProGuard rules
+   - Gradle secrets in version control
+
+2. **Release-Specific Crashes**
+   - Hilt classes stripped by ProGuard
+   - Room entities not kept
+   - SQLCipher missing native libs
+
+3. **Security & Compliance**
+   - Hardcoded keystore passwords
+   - API keys in source code
+   - Google ToS violations
+
+### Usage
+
+```bash
+cd /path/to/your/android/project
+coderabbit review
+```
+
+The scanner automatically detects Android projects and generates:
+- `.coderabbit/coderabbit.yaml` — Android-specific config
+- `.coderabbit/rules/android_build.yaml` — Build config rules
+- `.coderabbit/rules/android_security.yaml` — Security rules
+- `.coderabbit/reports/summary.md` — Findings with fixes
+
+---
+
+## Desktop App Integration
+
+### For Claude Desktop, Cursor, GitHub Copilot Desktop
+
+These apps use your system terminal, so the same `setup.sh` works. After setup:
+
+1. Open your project in the desktop app
+2. Open the integrated terminal
+3. Run `coderabbit review`
+
+### For App-Specific Terminal Access
+
+If a desktop app has its own terminal environment:
+
+```bash
+# Option 1: Add to the app's PATH manually
+export PATH="/Users/gouthamsai/opencode_1/coderabbit:$PATH"
+
+# Option 2: Use absolute path
+/Users/gouthamsai/opencode_1/coderabbit/coderabbit review
+```
 
 ---
 
 ## Development
 
-### Install dev dependencies
 ```bash
-pip install -e ".[dev]"
+cd /Users/gouthamsai/opencode_1/coderabbit
+python3 smart_config.py --help
 ```
-
-### Run tests
-```bash
-pytest tests/
-```
-
-### Lint
-```bash
-ruff check src/
-```
-
-### Add new tool
-1. Implement the tool interface in `src/coderabbit/tools/`
-2. Register it in the tool registry
-3. Add configuration option to `.coderabbit.yaml`
-
----
-
-## Architecture
-
-Coderabbit follows a modular architecture designed for AI agent integration:
-
-```
-┌─────────────────────────────────────────────────┐
-│                    CLI LAYER                    │
-│  ┌─────────┐  ┌─────────┐  ┌─────────────┐       │
-│  │ review  │  │  plan   │  │  verify   │       │
-│  └────┬────┘  └────┬────┘  └─────┬───────┘       │
-└───────┼────────────┼─────────────┼───────────────┘
-        │            │             │
-        ▼            ▼             ▼
-┌─────────────────────────────────────────────────┐
-│                   ENGINE LAYER                  │
-│  ┌─────────────┐  ┌─────────┐  ┌────────────┐   │
-│  │   Analyzer  │  │ Planner │  │ Validator │   │
-│  └─────────────┘  └─────────┘  └────────────┘   │
-└────────────────────────┬────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────┐
-│                    TOOL LAYER                   │
-│  ┌───────┐  ┌───────┐  ┌───────┐  ┌───────┐    │
-│  │Semgrep│  │ESLint │  │  Ruff │  │  MyPy │    │
-│  └───────┘  └───────┘  └───────┘  └───────┘    │
-└─────────────────────────────────────────────────┘
-```
-
-See [architecture-open.md](./architecture-open.md) for full system design details.
 
 ---
 
 ## License
 
 MIT License — See [LICENSE](LICENSE) file for details.
-
----
-
-## Contributing
-
-1. Fork the repo
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
----
-
-## Acknowledgments
-
-- [Semgrep](https://semgrep.dev/) — Static analysis rules
-- [Ruff](https://ruff.rs/) — Fast Python linter
-- [MyPy](https://mypy-lang.org/) — Python type checker
-- [Bandit](https://bandit.readthedocs.io/) — Security linter for Python
-
-<p align="center">
-  <strong>Built for AI coding agents everywhere.</strong><br>
-  If you're building the next generation of AI software, a ⭐ helps others find it.
-</p>

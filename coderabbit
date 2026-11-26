@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+#
+# Coderabbit CLI Wrapper
+# One-command deep analysis for any project type
+# Works with Claude Code, Hermes, Code CLI, and others
+#
+# Features:
+# - Automatic project type detection
+# - Deep security and architecture analysis
+# - Unused dependency detection
+# - Code quality optimization suggestions
+# - AI slop detection
+#
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="${PWD}"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
+log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
+
+# Use Python-based smart scanner (no external dependencies needed)
+RUN_SCANNER() {
+    python3 "$SCRIPT_DIR/smart_config.py" "$1" 2>&1
+}
+
+main_review() {
+    # Accept directory as second argument, or use current directory
+    local project="${2:-$PROJECT_ROOT}"
+    log_info "Starting deep scan..."
+    log_info "Project root: $project"
+    
+    # Run the Python scanner
+    RUN_SCANNER "$project"
+}
+
+detect_project_type() {
+    local project="${1:-$PROJECT_ROOT}"
+    python3 -c "
+import sys
+sys.path.insert(0, '$SCRIPT_DIR')
+from smart_config import detect_project_type
+import os
+project_type, confidence = detect_project_type('$project')
+print(project_type)
+"
+}
+
+# Commands
+case "${1:-}" in
+    "review")
+        main_review "$1" "$2"
+        ;;
+    "scan")
+        PROJECT_ROOT="${2:-$PWD}"
+        main_review "scan" "$PROJECT_ROOT"
+        ;;
+    "detect")
+        detect_project_type "${2:-$PWD}"
+        ;;
+    "detect-conf")
+        detect_project_type "${2:-$PWD}"
+        ;;
+    "fix")
+        log_info "Auto-fix suggestions available in reports/"
+        log_info "Run 'coderabbit review' first to generate reports"
+        ;;
+    "help"|"-h"|"--help")
+        printf 'Coderabbit CLI - Deep code analysis for any project\n\n'
+        printf 'Usage:\n'
+        printf '  coderabbit review [directory]  # Run deep scan on project\n'
+        printf '  coderabbit scan <directory>  # Scan specific directory\n'
+        printf '  coderabbit detect <directory>  # Detect project type\n'
+        printf '  coderabbit fix [issues]        # Show fix suggestions\n\n'
+        printf 'Features:\n'
+        printf '  - Automatic project type detection (Android, React, Vue, Python, Go, Rust)\n'
+        printf '  - Security scan (hardcoded secrets, vulnerabilities)\n'
+        printf '  - Architecture review (thread safety, memory leaks)\n'
+        printf '  - Code quality analysis (AI slop, complexity)\n'
+        printf '  - Unused dependency detection\n'
+        printf '  - Performance optimization suggestions\n\n'
+        printf 'Reports generated in .coderabbit/reports/\n'
+        ;;
+    *)
+        printf 'Coderabbit CLI - Deep code analysis for any project\n\n'
+        printf 'Usage:\n'
+        printf '  coderabbit review [directory]  # Run deep scan on project\n'
+        printf '  coderabbit scan <directory>  # Scan specific directory\n'
+        printf '  coderabbit detect <directory>  # Detect project type\n'
+        printf '  coderabbit fix [issues]        # Show fix suggestions\n\n'
+        printf 'Run "coderabbit help" for details\n'
+        exit 1
+        ;;
+esac

@@ -1,0 +1,90 @@
+{
+  "version": "1.0.0",
+  "project": "Universal Android Build Configuration",
+  "description": "Enhanced Coderabbit configuration for detecting build, security, and architecture issues in Android projects",
+  
+  "build_checks": {
+    "android": {
+      "required_signing_configs": ["debug", "release"],
+      "release_build_requirements": {
+        "minify_enabled": false,
+        "shrink_resources": false,
+        "proguard_rules_present": true,
+        "signing_config_specified": true
+      },
+      "error_patterns": [
+        "missing signingConfig.*release",
+        "isMinifyEnabled.*true.*without.*proguard-rules",
+        "storeFile.*not.*exists",
+        "annotationProcessor.*without.*kapt.*or.*ksp"
+      ]
+    }
+  },
+
+  "proguard_checks": {
+    "required_keeps": [
+      "dagger.hilt.**",
+      "androidx.room.**",
+      "kotlinx.serialization.**",
+      "net.zetetic.**",
+      "retrofit2.**",
+      "okhttp3.**",
+      "androidx.work.**"
+    ],
+    "required_dontwarns": [
+      "retrofit2.**",
+      "okhttp3.**",
+      "kotlinx.coroutines.**"
+    ]
+  },
+
+  "security_patterns": {
+    "keystore_issues": [
+      "keystore.*not.*found",
+      "keyAlias.*not.*configured",
+      "storePassword.*default.*android",
+      "keyPassword.*default.*android"
+    ],
+    "hardcoded_secrets": [
+      "PASSWORD.*=.*[\"'][^\"']+[\"']",
+      "API_KEY.*=.*[\"'][^\"']+[\"']"
+    ],
+    "tos_violations": [
+      "jsoup.*connect.*google\\.com",
+      "google\\.com/search"
+    ]
+  },
+
+  "architecture_patterns": {
+    "singleton_patterns": {
+      "database_singleton": {
+        "expected_pattern": "@Volatile private var INSTANCE",
+        "missing_indicators": [
+          "without.*@Volatile",
+          "INSTANCE.*=.*null.*check"
+        ]
+      }
+    },
+    "receiver_patterns": {
+      "registration_check": {
+        "must_have": ["registerReceiver", "unregisterReceiver"],
+        "null_safety": ["initialized.*=.*null", "unregister.*!!", "NPE"]
+      }
+    }
+  },
+
+  "severity_mapping": {
+    "release_build_failure": "CRITICAL",
+    "proguard_stripping": "CRITICAL",
+    "security_violation": "HIGH",
+    "memory_leak": "MEDIUM",
+    "thread_safety": "MEDIUM"
+  },
+
+  "integration_notes": {
+    "enable_build_artifact_analysis": true,
+    "include_configuration_files": true,
+    "cross_file_analysis": true,
+    "release_vs_debug_detection": true
+  }
+}

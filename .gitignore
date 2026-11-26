@@ -74,3 +74,10 @@ migrations/
 # Environment files
 .env.local
 .env.*.local
+
+# Coderabbit generated output (per-project analysis - use absolute path ignore)
+/.coderabbit/
+
+# Temporary test files
+verify_test/
+test_project/
