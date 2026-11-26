@@ -134,11 +134,38 @@ if (!user?.profile?.active) return;
 
 ## Integration with Coding CLIs
 
-### Hermes (Agentic OS)
+### Hermes Agent (Recommended)
+
+Coderabbit is designed to work seamlessly with Hermes Agent. After running `setup.sh`, use in any Hermes session:
+
 ```bash
 # In your Hermes session, from any project directory:
 coderabbit review
-# View results in Agentic_OS/.coderabbit/reports/summary.md
+# View results in .coderabbit/reports/summary.md
+```
+
+**Hermes-specific features:**
+
+1. **Context Memory** - Review results are saved to hermes memory for conversation continuity
+2. **Skill Delegation** - Run reviews in separate hermes instance: `hermes -w -q "Review with coderabbit"`
+3. **CI/CD Integration** - Auto-fail hermes workflows on CRITICAL issues
+4. **Quality Gates** - Block code merges if quality score < 80
+
+**Programmatic usage in Hermes:**
+
+```yaml
+# In your .hermes.md or project rules:
+coderabbit:
+  cli: "coderabbit"
+  path: "/Users/gouthamsai/opencode_1/coderabbit"
+  config: ".coderabbit.yaml"
+```
+
+Then in hermes chat:
+```
+@review ./path/to/project
+@fix hardcoded password in src/Main.kt
+@quality report for Agentic_OS
 ```
 
 ### Claude Code CLI
